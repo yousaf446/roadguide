@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'mongoDB'),
 
     /*
     |--------------------------------------------------------------------------
@@ -85,6 +85,15 @@ return [
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
+
+        'mongoDB' => array(
+            'driver'   => 'mongodb',
+            'host'     => env('DB_MONGO_HOST', 'localhost'),
+            'port'     => env('DB_MONGO_PORT', '27017'),
+            'username' => env('DB_MONGO_USERNAME', 'forge'),
+            'password' => env('DB_MONGO_PASSWORD', ''),
+            'database' => env('DB_MONGO_DATABASE', 'forge'),
+        ),
 
     ],
 
