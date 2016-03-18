@@ -17,6 +17,8 @@ Route::get('/', function () {
 
 Route::post('place/add', 'PlaceController@addPlace');
 
+Route::get('zameenScrape', 'zameenController@getContents');
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
