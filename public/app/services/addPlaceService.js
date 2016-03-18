@@ -1,15 +1,18 @@
 define(function() {
     var coreModule = angular.module('coreModule');
     coreModule.service('addPlaceService', ['$http', '$q', function($http, $q) {
-        this.addPlace = function(data) {
+        this.addPlace = function(data, area_name, search_type) {
             var deffered = $q.defer();
-            return $http.post('place/add', data).then(function successCallback(response) {
-                console.log(response);
+            var final_data = {
+                area: area_name,
+                search: search_type,
+                result: data
+            }
+            return $http.post('place/add', final_data).then(function successCallback(response) {
                 deffered.resolve(response);
                 return deffered.promise;
 
             }, function errorCallback(response) {
-                console.log(response);
                 deffered.reject(response);
                 return deffered.promise;
             });

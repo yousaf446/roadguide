@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('place/add', 'PlaceController@addPlace');
+Route::post('place/add', 'PlaceController@addPlace');
 
 /*
 |--------------------------------------------------------------------------

@@ -15,15 +15,7 @@ class Place
     }
 
     public function addPlace($data) {
-        DB::beginTransaction();
-        try {
-            $result = $this->placeHandler->addPlace($data);
-
-            DB::commit();
-            return $result;
-        } catch(\Exception $e){
-            DB::rollback();
-
-        }
+        $result = $this->placeHandler->addPlace($data);
+        return $result;
     }
 }

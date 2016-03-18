@@ -2,12 +2,11 @@ define(function() {
     var coreModule = angular.module('coreModule');
     coreModule.service('searchService', ['$http', '$q', function($http, $q) {
 
-        this.getPlaces = function ($rootScope, map, latitude, longitude, type) {
-
-            var location = new google.maps.LatLng(latitude, longitude);
+        this.getPlaces = function ($rootScope, map, area_name, area_bounds, type) {
+            $rootScope.result = "";
+            console.log(area_bounds);
             var request = {
-                location: location,
-                radius: 5000,
+                bounds: area_bounds,
                 types: [type]
             };
 
@@ -21,6 +20,7 @@ define(function() {
                     });
                 } else {
                     console.log("No Result Found");
+                    $rootScope.result = "";
                 }
             }
         };
