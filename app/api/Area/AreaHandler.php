@@ -16,13 +16,25 @@ class AreaHandler
             return false;
     }
 
-    public function getArea($status, $bounds = null)
+    public function getArea($status)
     {
 
         $city = DB::table('areas')
             ->where('status', '=', $status)
-            ->where('bounds', '=', $bounds)
-            ->take(20)
+            ->get();
+        if ($city)
+            return $city;
+        else
+            return false;
+    }
+
+    public function getAreaBounds($status, $bounds)
+    {
+
+        $city = DB::table('areas')
+            ->where('status', '=', $status)
+            ->whereNull('bounds')
+            ->take(500)
             ->get();
         if ($city)
             return $city;

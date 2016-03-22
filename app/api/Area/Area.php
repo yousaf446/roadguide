@@ -23,4 +23,9 @@ class Area
         $result = $this->areaHandler->getArea($status);
         return $result;
     }
+
+    public function getAreaBounds($status, $bounds) {
+        $result = $this->areaHandler->getAreaBounds($status, $bounds);
+        return $result;
+    }
 }

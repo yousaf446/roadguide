@@ -244,7 +244,7 @@ class zameenController extends Controller
                 return $aArea;
                 break;
             case 'bounds':
-                $areas = $this->area->getArea(1);
+                $areas = $this->area->getAreaBounds(1, null);
                 $aArea = [];
                 foreach($areas as $thisArea) {
                     $thisCityArea = [];
@@ -260,11 +260,17 @@ class zameenController extends Controller
                             DB::table('areas')
                                 ->where('_id', $thisArea['_id'])
                                 ->update([
-                                    'bounds' => json_encode($bounds)
+                                    'bounds' => $bounds
                                 ]);
                         } else {
                             echo "N/A";
+                            print_r($thisArea);
                             echo "<br/><br/>";
+                            DB::table('areas')
+                                ->where('_id', $thisArea['_id'])
+                                ->update([
+                                    'bounds' => false
+                                ]);
                         }
                     }
                 }
