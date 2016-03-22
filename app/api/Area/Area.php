@@ -19,8 +19,8 @@ class Area
         return $result;
     }
 
-    public function getArea() {
-        $result = $this->areaHandler->getArea();
+    public function getArea($status) {
+        $result = $this->areaHandler->getArea($status);
         return $result;
     }
 }

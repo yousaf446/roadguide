@@ -16,12 +16,13 @@ class AreaHandler
             return false;
     }
 
-    public function getArea()
+    public function getArea($status, $bounds = null)
     {
 
         $city = DB::table('areas')
-            ->where('latitude', '=', null)
-            ->where('longitude', '=', null)
+            ->where('status', '=', $status)
+            ->where('bounds', '=', $bounds)
+            ->take(20)
             ->get();
         if ($city)
             return $city;

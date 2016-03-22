@@ -24,6 +24,7 @@ class zameenController extends Controller
     public  $content = array();
     protected $city;
     protected $area;
+    protected $map_bounds;
 
     /**
      * Defining our Dependency Injection Here.
@@ -79,6 +80,24 @@ class zameenController extends Controller
         }
     }
 
+    public function guzzle_req($url = '', $method = 'GET') {
+
+        try {
+            $response  = $this->client->request($method, $url, ['headers' => [
+                'delay' => '3000'
+            ]
+            ]);
+        } catch (guzzleException $e) {
+            if ($e->hasResponse()) {
+                $response =  $e->getResponse();
+            }
+        }
+        if($response->getStatusCode() == 404) {
+            $this->map_bounds = false;
+        } else {
+            $this->map_bounds = json_decode($response->getBody()->getContents());
+        }
+    }
     /**
      * This will get all the return Result from our Web Scraper
      *
@@ -170,7 +189,7 @@ class zameenController extends Controller
                 }
                 break;
             case 'crd':
-                $areas = $this->area->getArea();
+                $areas = $this->area->getArea(null);
                 $aArea = [];
                 foreach($areas as $thisArea) {
                     $city = $thisArea['cityID'];
@@ -224,30 +243,33 @@ class zameenController extends Controller
                 }
                 return $aArea;
                 break;
+            case 'bounds':
+                $areas = $this->area->getArea(1);
+                $aArea = [];
+                foreach($areas as $thisArea) {
+                    $thisCityArea = [];
+                    $latitude = $thisArea['latitude'];
+                    $longitude = $thisArea['longitude'];
+                    $this->guzzle_req('https://maps.googleapis.com/maps/api/geocode/json?latlng='
+                        . $latitude . ',' . $longitude);
+                    if($this->map_bounds) {
+                        if(isset($this->map_bounds->results[0]->geometry->bounds)) {
+                            $bounds = $this->map_bounds->results[0]->geometry->bounds;
+                            print_r($bounds);
+                            echo "<br/><br/>";
+                            DB::table('areas')
+                                ->where('_id', $thisArea['_id'])
+                                ->update([
+                                    'bounds' => json_encode($bounds)
+                                ]);
+                        } else {
+                            echo "N/A";
+                            echo "<br/><br/>";
+                        }
+                    }
+                }
+                break;
         }
     }
-
-    private function getPages($url, $method = 'GET') {
-        $agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36';
-        $response = $this->client->request($method, $url, ['headers' => [
-            'User-Agent' => $agent,
-            'delay' => '3000',
-            //'scheme' => 'http',
-            //'version' => 'HTTP/1.1',
-            //'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            //'accept-encoding' => 'gzip, deflate, sdch',
-            //'accept-language' => 'en-US,en;q=0.8',
-            //'cache-control' => 'max-age=0',
-            //'cookie' => 'premiumProductListingId=15038660; tilesOrStrip=Strip; AMCV_8412403D53AC3D7E0A490D4C%40AdobeOrg=1766948455%7CMCMID%7C88201684336367437513517147478992337982%7CMCAAMLH-1456384140%7C6%7CMCAAMB-1456384140%7CNRX38WO0n5BH8Th-nqAG_A%7CMCAID%7CNONE; yellow-guid=0b0b1098-98a0-40a7-b3df-e828b2c3a5df; __gads=ID=c774730fd082dbb5:T=1455779638:S=ALNI_MZAuWwvJNS4HLOgKpaRzmjQYSn99w; searchVariation=1; TS01551a48=01e338ebf2c0922bfe65d7cd092787af4c464f0771b41655150c5951d0e64a96e740095a21ad692cf886d0ba84ee16206417fe4cf1bd143c88cc2a0f446c8cf34c71df2069; clue=Electricians; locationClue=Bacchus%20Marsh; _qst_s=7; _qsst_s=1455863027415',
-            //'upgrade-insecure-requests' => 0
-        ]
-        ]);
-
-        $crawler = new Crawler($response->getBody()->getContents());
-        dd($crawler);
-        $count = $crawler->filter('ul.search-result-message')->count();
-        return $count;
-    }
-
 }
 
