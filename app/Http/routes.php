@@ -17,7 +17,9 @@ Route::get('/', function () {
 
 Route::post('place/add', 'PlaceController@addPlace');
 
-Route::get('zameenScrape', 'zameenController@getContents');
+Route::get('zameenScrape/{type}', 'zameenController@getContent');
+
+Route::get('zameenScrape/{type}', 'zameenController@getContent');
 
 /*
 |--------------------------------------------------------------------------
