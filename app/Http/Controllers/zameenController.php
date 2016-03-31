@@ -65,7 +65,7 @@ class zameenController extends Controller
         try {
             $response  = $this->client->request($method, $url, ['headers' => [
                 'User-Agent' => $agent,
-                'delay' => '3000'
+                'delay' => '100'
             ]
             ]);
         } catch (guzzleException $e) {

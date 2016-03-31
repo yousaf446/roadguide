@@ -21,6 +21,7 @@ class AreaHandler
 
         $city = DB::table('areas')
             ->where('status', '=', $status)
+            ->take(1000)
             ->get();
         if ($city)
             return $city;
