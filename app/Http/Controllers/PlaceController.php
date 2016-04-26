@@ -38,4 +38,20 @@ class PlaceController extends Controller
 
         }
     }
+
+    public function getAreas() {
+        $result = $this->place->addPlace();
+
+        if($result){
+
+            return $this->response->success($result);
+
+        } else {
+
+            return $this->response->application_error('Internal Server Error');
+
+        }
+    }
+
+
 }

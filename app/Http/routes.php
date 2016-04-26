@@ -11,13 +11,23 @@
 |
 */
 
-Route::get('/', function () {
+
+
+// Backend Route
+
+
+Route::get('zameenScrape/{type}', 'zameenController@getContent');
+
+// FrontEnd Route
+
+Route::get('/search', function () {
     return view('index');
 });
 
 Route::post('place/add', 'PlaceController@addPlace');
-
-Route::get('zameenScrape/{type}', 'zameenController@getContent');
+Route::get('area', 'AreaController@getAreaCity');
+Route::put('area/update', 'AreaController@updateArea');
+Route::get('area/fix', 'AreaController@fixArea');
 
 /*
 |--------------------------------------------------------------------------

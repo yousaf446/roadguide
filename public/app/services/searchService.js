@@ -2,12 +2,13 @@ define(function() {
     var coreModule = angular.module('coreModule');
     coreModule.service('searchService', ['$http', '$q', function($http, $q) {
 
-        this.getPlaces = function ($rootScope, map, area_name, area_bounds, type) {
+        this.getPlaces = function ($rootScope, map, latitude, longitude, type) {
             $rootScope.result = "";
-            console.log(area_bounds);
+            var loc = new google.maps.LatLng(latitude, longitude);
             var request = {
-                bounds: area_bounds,
-                types: [type]
+                location: loc,
+                types: [type],
+                radius: 1000
             };
 
             var service = new google.maps.places.PlacesService(map);

@@ -84,9 +84,10 @@ class zameenController extends Controller
 
         try {
             $response  = $this->client->request($method, $url, ['headers' => [
-                'delay' => '3000'
-            ]
-            ]);
+                                'delay' => '3000'
+                            ]
+                        ]
+            );
         } catch (guzzleException $e) {
             if ($e->hasResponse()) {
                 $response =  $e->getResponse();
@@ -250,18 +251,25 @@ class zameenController extends Controller
                     $thisCityArea = [];
                     $latitude = $thisArea['latitude'];
                     $longitude = $thisArea['longitude'];
-                    $this->guzzle_req('https://maps.googleapis.com/maps/api/geocode/json?latlng='
-                        . $latitude . ',' . $longitude);
-                    if($this->map_bounds) {
+                    $name = $thisArea['name'];
+                    $city = $thisArea['cityName'];
+                    $this->guzzle_req('https://maps.googleapis.com/maps/api/geocode/json?address='
+                        . $name . ',' . $city);
+                    if($this->map_bounds->status == "OK") {
                         if(isset($this->map_bounds->results[0]->geometry->bounds)) {
-                            $bounds = $this->map_bounds->results[0]->geometry->bounds;
-                            print_r($bounds);
-                            echo "<br/><br/>";
-                            DB::table('areas')
-                                ->where('_id', $thisArea['_id'])
-                                ->update([
-                                    'bounds' => $bounds
-                                ]);
+                            $address_components = $this->map_bounds->results[0]->address_components;
+                            foreach($address_components as $thisComponent) {
+                                if($thisComponent->types[0] == "country" && $thisComponent->long_name == "Pakistan") {
+                                    $bounds = $this->map_bounds->results[0]->geometry->bounds;
+                                    print_r($bounds);
+                                    echo "<br/><br/>";
+                                    DB::table('areas')
+                                        ->where('_id', $thisArea['_id'])
+                                        ->update([
+                                            'bounds' => $bounds
+                                        ]);
+                                }
+                            }
                         } else {
                             echo "N/A";
                             print_r($thisArea);
@@ -269,9 +277,18 @@ class zameenController extends Controller
                             DB::table('areas')
                                 ->where('_id', $thisArea['_id'])
                                 ->update([
-                                    'bounds' => false
+                                    'bounds' => 'NA'
                                 ]);
                         }
+                    } else {
+                        echo "N/A";
+                        print_r($thisArea);
+                        echo "<br/><br/>";
+                        DB::table('areas')
+                            ->where('_id', $thisArea['_id'])
+                            ->update([
+                                'bounds' => 'NA'
+                            ]);
                     }
                 }
                 break;

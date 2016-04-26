@@ -28,4 +28,19 @@ class Area
         $result = $this->areaHandler->getAreaBounds($status, $bounds);
         return $result;
     }
+
+    public function getAreaCity($city) {
+        $result = $this->areaHandler->getAreaCity($city);
+        return $result;
+    }
+
+    public function updateArea($id) {
+        $result = $this->areaHandler->updateArea($id);
+        return $result;
+    }
+
+    public function fixArea() {
+        $result = $this->areaHandler->fixArea();
+        return $result;
+    }
 }

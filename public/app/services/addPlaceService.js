@@ -1,9 +1,10 @@
 define(function() {
     var coreModule = angular.module('coreModule');
     coreModule.service('addPlaceService', ['$http', '$q', function($http, $q) {
-        this.addPlace = function(data, area_name, search_type) {
+        this.addPlace = function(data, area_name, city_name, search_type) {
             var deffered = $q.defer();
             var final_data = {
+                city: city_name,
                 area: area_name,
                 search: search_type,
                 result: data
